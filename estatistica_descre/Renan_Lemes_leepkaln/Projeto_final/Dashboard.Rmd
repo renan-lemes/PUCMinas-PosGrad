@@ -1,0 +1,124 @@
+---
+title: "Dashboard"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(readr)
+library(ggplot2)
+library(plotly)
+library(e1071)
+require(dplyr)
+require(Hmisc)
+require(esquisse)
+library(DescTools)
+require(gridExtra)
+
+df = read_csv2("MICRODADOS_ENADE_2017.txt")
+df = df %>% dplyr::select(
+  NT_OBJ_FG,
+  CO_GRUPO,
+  CO_REGIAO_CURSO,
+  QE_I02,
+  CO_TURNO_GRADUACAO ,
+  NT_GER
+)
+
+df = df %>% filter(CO_GRUPO == 701)
+
+colnames(df)[2] <- "MAT_BC" 
+colnames(df)[4] <- "EST_CVL" 
+
+
+df$EST_CVL = ifelse(
+  df$EST_CVL == "A",
+  "Solteiro(a)",
+  ifelse(
+    df$EST_CVL == "B",
+    "Casado(a)",
+    ifelse(
+      df$EST_CVL == "C",
+      "Separado(a)",
+      ifelse(df$EST_CVL ==
+               "D", "Viuvo(a)", "Outro")
+    )
+  )
+)
+
+df = df %>% mutate(
+  CO_REGIAO_CURSO = case_when(
+    CO_REGIAO_CURSO == 1 ~ "Norte",
+    CO_REGIAO_CURSO == 2 ~ "Nordeste",
+    CO_REGIAO_CURSO == 3 ~ "Sudeste",
+    CO_REGIAO_CURSO == 4 ~ "Sul",
+    CO_REGIAO_CURSO == 5 ~ "Centro-Oeste"
+  )
+)
+
+df = df %>% mutate(
+  CO_TURNO_GRADUACAO = case_when(
+    CO_TURNO_GRADUACAO == 1 ~ "Matutino",
+    CO_TURNO_GRADUACAO == 2 ~ "Vespertino",
+    CO_TURNO_GRADUACAO == 3 ~ "Integral",
+    CO_TURNO_GRADUACAO == 4 ~ "Noturno",
+  )
+)
+
+df = df %>% na.omit()
+
+
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Histogram
+
+```{r}
+g_hist = ggplot(df, aes(x = NT_OBJ_FG)) +
+  geom_histogram(color = "black",
+                 fill = "blue",
+                 bins = 20,
+                 aes(y = (..count..) / sum(..count..))) +
+  ggtitle("Histograma da nota dos alunos de Matemática (Bacharel)") +
+  xlab("nota") +
+  ylab("Frequência relativa")
+g_hist
+```
+
+### BoxSplot
+
+```{r}
+ggplot(data = df, aes(x = CO_REGIAO_CURSO, y = NT_OBJ_FG)) +
+  geom_boxplot(fill = "green") +
+  labs(title = "Distribuição de Notas por Região", x = "Região", y = "Notas")
+```
+
+Column {data-width=450}
+-----------------------------------------------------------------------
+
+### Dataset do ENADE 
+
+```{r}
+
+df %>%
+  group_by(NT_OBJ_FG, CO_REGIAO_CURSO, EST_CVL, CO_TURNO_GRADUACAO, NT_GER) %>%
+knitr::kable()
+```
+
+### SideBar
+
+```{r}
+ggplot(data = df, aes(x = CO_REGIAO_CURSO, fill = EST_CVL)) +
+  geom_bar() +
+  labs(title = "Gráfico de Barras Empilhadas",
+       x = "Região do Curso",
+       y = "Contagem",
+       fill = "Estado Civil")
+```
+

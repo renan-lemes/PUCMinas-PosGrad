@@ -1,0 +1,278 @@
+|              |
+|--------------|
+| Prática no R |
+
+# Amostragem Simples
+
+A amostragem alealória simples pode ser realizada de duas maneiras:
+
+-   Com reposição:
+-   Sem reposição:
+
+*sample* função nativa do R para extrair amostra simples
+
+Amostragem Aleatória Com Reposição De tamanho 5
+
+```{r}
+dados_populacao =c(10,20,30,40,50,60,70,80,90,100)
+sample(dados_populacao,size=5, replace=T)
+
+```
+
+Amostragem Aleatória Sem Reposição De tamanho 7
+
+```{r}
+sample(dados_populacao,size=7,replace=F)
+
+```
+
+**Exemplos:**
+
+Gerar 300 amostras, de 0 e 1, com reposição, e prob. equivalentes.
+
+Seria o mesmo que jogar 300 moedas ,sendo que 1 seria cara e 0 coroa
+
+Iremos utilizar o comando sample para extrair amostra simples no R
+
+vetor de C(0,1) universo no qual ele vai produzir as amostras - contém 0 e 1
+
+-   O numero 300 é relativo o tamanho da amostra de 0 e 1
+
+-   Replace = TRUE - Verdadeiro para realizar a reposição
+
+-   prob : probabilidade de ocorrencia
+
+```{r}
+amostra = sample(c(0,1), 300, replace = TRUE, prob=c(0.5,0.5))
+amostra
+
+#resumo do numero de 0 e 1's
+summary(as.factor(amostra))
+```
+
+300 amostras, de zero e 1, com reposição, probabilidade nao equivalentes
+
+```{r}
+amostra = sample(c(0,1), 300, replace = TRUE, prob=c(0.7,0.3))
+amostra
+summary(as.factor(amostra))
+```
+
+250 amostras, de 1 a 999, sem reposição, prob. equivalentes
+
+```{r}
+amostra = sample(c(1:1000), 250, replace = FALSE)
+amostra
+```
+
+Supondo que queremos separar o conjunto de dados iris em 70% e 30%
+
+Obs: Iris tem 150 instancias
+
+```{r}
+amostra = sample(c(0,1), 150, replace = TRUE, prob=c(0.7,0.3))
+summary(as.factor(amostra))
+```
+
+Gerar a amostra
+
+```{r}
+amostrairis_30 = iris[amostra==1,]
+amostrairis_30
+amostrairis_70 = iris[amostra!=1,]
+amostrairis_70
+
+dim(amostrairis_70)
+```
+
+Repetir experimento - sementes aleatórias
+
+```{r}
+set.seed(999999)
+sample(c(1000), 1)
+```
+
+Repetindo
+
+```{r}
+set.seed(999999)
+sample(c(1000), 1)
+```
+
+# Amostra Sistemática
+
+Queremos escolher uma amostra de 1000 lâmpadas, dentre uma população de 5000 lâmpadas
+
+```{r}
+n = 1000 
+N = 5000
+```
+
+Calculando o valor de K
+
+```{r}
+k = N / n
+k
+```
+
+Sortearemos um valor entre 1 e k que chammos de partida aleatória e denotamos de r.
+
+```{r}
+r=sample(k, 1)  
+```
+
+Sorteado:
+
+```{r}
+seq(from=r,to=N,by=k)
+```
+
+Exemplo utilizando o pacote TeachingSampling
+
+```{r}
+options("download.file.method"="wininet")
+install.packages("TeachingSampling")
+library("TeachingSampling")
+```
+
+**Amostra sistemática:**
+
+-   Tamanho populacional 150
+-   K - 10
+
+```{r}
+amostra = S.SY(150, 10)
+amostra
+```
+
+Tamanho
+
+```{r}
+dim(amostra)
+```
+
+Usamos em iris
+
+```{r}
+amostrairis = iris[amostra,]
+```
+
+Verificamos
+
+```{r}
+amostrairis
+```
+
+Tamanho
+
+```{r}
+dim(amostrairis)
+```
+
+# Amostragem Estratificada
+
+Tamanho que deve ter a amostra:
+
+```{r}
+n = 80 
+```
+
+Tamanhos dos estratos da população:
+
+```{r}
+N1 = 500 
+
+N2 = 1200 
+
+N3 = 200 
+
+N4 = 100
+```
+
+Tamanho total da população
+
+```{r}
+N = N1 + N2 + N3 + N4
+N
+```
+
+Fração amostral
+
+```{r}
+f = n / N
+f
+```
+
+Calculando os n´s para cada extrato com alocação proporcional ao tamanho do estrato
+
+```{r}
+n1 = f*N1
+n2 = f*N2 
+n3 = f*N3 
+n4 = f*N4
+```
+
+Juntando os tamanhos das amostra dos estratos
+
+```{r}
+cbind(n1, n2, n3, n4)
+```
+
+Posterioemnte retiraríamos uma AAS.
+
+Exemplo:
+
+```{r}
+install.packages("sampling")
+library("sampling")
+```
+
+Proporção
+
+```{r}
+proporcao = 25
+```
+
+Utilizando o pacote sampling temos:
+
+-   srswor para amostra simples sem reposição
+-   srswr com reposição
+-   systematic
+
+Entre outras opções : olhar o Help do pacote
+
+size -\> proporção em cada estrato (Species) - 25 observações em cada estrato
+
+```{r}
+summary(iris)
+amostrairis2=strata(data=iris,stratanames=c("Species"),size=c(rep( propocao,3)), method="srswor")
+```
+
+Resultado
+
+```{r}
+summary(amostrairis2)
+```
+
+Exemplo 2:
+
+Dados de infertilidade
+
+```{r}
+infert
+summary(infert)
+```
+
+Amostragem por estratos definidos na variável education
+
+```{r}
+amostra=strata(data=infert,
+               stratanames=c("education"),size=c(5,48,47), method="srswor")
+```
+
+Resultado
+
+```{r}
+amostra
+summary(amostra)
+```

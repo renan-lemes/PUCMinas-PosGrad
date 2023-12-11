@@ -1,0 +1,429 @@
+# Intervalos de confiança
+
+\-\-\-\-\--
+
+# Intervalos com variância conhecida
+
+O projetista de uma indústria tomou uma amostra de 36 funcionários para verificar o tempo médio gasto (minutos) para montar um determinado brinquedo.
+
+```{r}
+tempo = c(19, 19, 24, 19, 10, 17, 23, 23, 14, 12, 28, 20, 23, 19, 19, 21, 20, 17,
+          15, 23, 21, 20, 20,22, 28, 26, 27, 25, 19, 17, 20, 19, 16, 22, 19, 13)
+```
+
+De acordo com estudos anteriores e conhecimento dos pesquisadores tem-se que σ=5,73. Pede-se, construir um intervalo de confiança de nível 95% para a média populacional μ.
+
+1º Passo - Determinar o quant1l (z/2) da distribuição normal padrão N(0,1)
+
+```{r}
+alpha = 0.05
+zc <- qnorm(p = 1-alpha/2,
+             mean = 0,
+             sd = 1)
+zc
+```
+
+2º Passo - Calcular o erro amostral
+
+```{r}
+sigma = 5.73
+n = 36
+
+erro <- zc*sigma/sqrt(n)
+erro
+```
+
+3º Passo Construir o intervalo para μ com 95% de confiança
+
+```{r}
+media = mean(tempo)
+media
+media - erro
+media + erro
+```
+
+\
+Exemplo 2
+
+Em uma indústria de cerveja, a quantidade de cerveja inserida em latas tem-se comportado como uma variável aleatória distribuída normalmente com média 350 ml e desvio padrão 3 ml. Após alguns problemas na linha de produção, suspeita-se que houve alteração na média. Uma amostra de 120 latas acusou média 346 ml. Encontre a estimativa pontual e construa um intervalo de confiança para o novo valor da quantidade média de cerveja inserida em latas, com nível de confiança de 95%, supondo que não tenha ocorrido alteração no desvio padrão do processo.
+
+X: Quantidade média de cerveja inserida nas latas (em ml).
+
+Dados disponíveis no enunciado:
+
+-   X \~ N(350,3²)
+
+-   n=120 latas → Tamanho da amostra
+
+-   media=346ml → Quantidade média observada na amostra → Estimativa pontual!
+
+-   σ=3ml → Desvio padrão da população de cervejas produzidas pela empresa.
+
+-   1-α=0,95 → Nível de confiança
+
+Valor Crítico
+
+```{r}
+qnorm(0.975, mean = 0, sd = 1, lower.tail = TRUE) -> zc
+zc
+```
+
+Margem de erro
+
+```{r}
+sigma = 3
+n = 120
+
+erro <- zc*sigma/sqrt(n)
+erro
+```
+
+Construir o intervalo para μ com 95% de confiança
+
+```{r}
+media = 346
+
+media - erro
+media + erro
+```
+
+Interpretação do intervalo de confiança:
+
+[345.46 ; 346.54] Podemos afirmar com 95% de confiança que o intervalo a quantidade média de cerveja inserida nas latas (em ml) pode variar de 345.46 ml a 346.54 ml.
+
+Exercício 1
+
+O diretor do comitê de admissão de uma universidade deseja estimar a média de idade de todos os estudantes aprovados no momento. Sabe-se que, de levantamentos anteriores, o desvio padrão da população é de 1,5 ano. Em uma amostra aleatória de 20 estudantes, a idade média encontrada foi de 22,9 anos.
+
+X: Idade de todos os estudantes aprovados .
+
+Dados disponíveis no enunciado:
+
+-   n=20 estudantes → Tamanho da amostra
+
+-   media= 22,9 anos→ Quantidade média observada na amostra
+
+-   σ= 1,5 ano → Desvio padrão da população.
+
+a)  Com base nessa amostra, qual é a estimativa pontual da idade média dos estudantes aprovados?
+
+    media= 22,9 anos→ Quantidade média observada na amostra → Estimativa pontual!
+
+b)  Construa um intervalo de 90% de confiança para a idade média da população.
+
+Valor crítico
+
+```{r}
+qnorm(0.90, mean = 0, sd = 1, lower.tail = TRUE) -> zc
+zc
+```
+
+Margem de erro
+
+```{r}
+sigma = 1.50
+n = 20
+
+erro <- zc*sigma/sqrt(n)
+erro
+```
+
+Construção do intervalo
+
+```{r}
+media = 22.9
+
+media - erro
+media + erro
+```
+
+Interpretação do intervalo de confiança
+
+Considerando um nível de 90% de confiaça podemos dizer que a idade média dos estudantes aprovados no vestibular pode variar de 22,47 a 23,32
+
+# Intervalos com Variância Desconhecida
+
+Diâmetro de árvores castanheiras
+
+A seguir encontra-se uma amostra de 9 árvores castanheiras todas com 8 anos de idade numa certa floresta. O diâmetro (polegadas) das árvores foram medidos à uma altura de 3 pés:
+
+```{r}
+diametro <- c(19.4, 21.4, 22.3, 22.1, 23.8, 24.6, 19.9, 21.5, 19.1)
+```
+
+Com base neste dados, construa um intervalo com 95% de confiança
+
+1º Passo - Determinar o quantl (tα/2) da distribuição t-Student com n-1 graus de liberdade
+
+```{r}
+alpha = 0.05
+n = length(diametro)
+n
+
+```
+
+```{r}
+tc <- qt(p = 1-alpha/2,
+         df = n-1)
+
+tc
+```
+
+2º Passo - Calcular o erro amostral:
+
+```{r}
+S = sd(diametro)
+
+erro <- tc*S/sqrt(n)
+erro
+```
+
+3 º Passo - Construir o intervalo para μ com 95% de confiança
+
+```{r}
+media = mean(diametro)
+
+media - erro -> linf
+media + erro -> lsup
+linf
+lsup
+```
+
+Com uma confiança de 95%, o diâmetro médio da população da qual a amostra foi retirada encontra-se entre 20.11 e 23.02.
+
+Exemplo 2
+
+Com um teste destrutivo, as amostras são destruídas no processo de teste. O teste de colisão de carros é um exemplo muito dispendioso de teste destrutivo. Suponha que tenhamos feito teste de colisão em 12 carros esporte sob uma diversidade de condições que simulam colisões típicas. A análise dos 12 carros danificados resulta em custos de conserto com média igual a US\$26.227,00 e um desvio padrão de US\$15.873,00. Sabe-se que os dados têm distribuição aproximadamente normal.
+
+X: Custo de conserto pós colisão .
+
+Dados disponíveis no enunciado:
+
+-   n=12 → Tamanho da amostra
+
+-   media= 26.227,00 → Quantidade média observada na amostra
+
+-   s= 15.873,00 → Desvio padrão AMOSTRAL.
+
+Determine:
+
+a)  A melhor estimativa pontual de μ, o custo médio de conserto de todos os carros esporte envolvidos em colisões.
+
+    US\$26227,00
+
+b)  A estimativa intervalar de 95% de confiança para μ
+
+Valor crítico
+
+```{r}
+alpha = 0.05
+n = 12
+tc <- qt(p = 1-alpha/2,
+         df = n-1)
+
+tc
+```
+
+Margem de erro
+
+```{r}
+s = 15873.00
+
+
+erro <- tc*s/sqrt(n)
+erro
+```
+
+Construção do intervalo
+
+```{r}
+media = 26227
+
+media - erro
+media + erro
+```
+
+Considerando um nível de 95% de confiança podemos dizer que o custo médio para conserto de veículos submetidos a teste de colisão pode variar de 16.141,78 a 36.312,22, com uma margem de erro de 10.085,22.
+
+Exercício 1
+
+Em uma pesquisa de orçamento familiar desenvolvida pelo instituto ZX, solicitou-se a uma amostra de 16 domicílios de certa região que anotassem suas despesas com alimentação durante uma semana. O resultado foi uma despesa média de R\$330,00 com um desvio padrão de R\$40,00. Construa e interprete um intervalo de 98% de confiança para a verdadeira despesa média semanal com alimentação por domicílio de toda a região. Suponha que a população tenha uma distribuição aproximadamente normal.
+
+X: Despesa média familiar .
+
+Dados disponíveis no enunciado:
+
+-   n=16 → Tamanho da amostra
+
+-   media= 330,00 → Quantidade média observada na amostra
+
+-   s= 40,00 → Desvio padrão AMOSTRAL.
+
+Valor crítico
+
+```{r}
+alpha = 0.02
+n = 16
+tc <- qt(p = 1-alpha/2,
+         df = n-1)
+
+tc
+```
+
+Margem de erro
+
+```{r}
+s = 40
+
+
+erro <- tc*s/sqrt(n)
+erro
+```
+
+Construção do intervalo
+
+```{r}
+media = 330
+
+media - erro
+media + erro
+```
+
+Considerando um nível de 98% de confiança podemos dizer quepodemos dizer que a despesa média semanal com alimentação das famílias de certa região pode variar de 303,98 a 356,02, com margem de erro de 26,02.
+
+#Intervalo de confiança para Proporção
+
+Numa amostra aleatória de tamanho n=700 foram encontrados 68 elementos defeituosos. Achar um intervalo de confiança de nível 95% para a proporção p de defeituosos.
+
+1º Passo - Determinar o quantil (zα/2) da distribuição normal padrão N(0,1)
+
+```{r}
+alpha = 0.05
+zc <- qnorm(p = 1-alpha/2,
+             mean = 0,
+             sd = 1)
+zc
+```
+
+2º Passo - Calcular o erro amostral:
+
+```{r}
+p = 68/700
+n = 700
+
+erro <- zc*sqrt( p*(1-p)/n  )
+erro
+```
+
+3 º - Passo Construir o intervalo para p com 95% de confiança
+
+```{r}
+p - erro ->linf
+p + erro -> lsup
+linf
+lsup
+```
+
+Exemplo 1
+
+Em uma linha de produção de certa peça cerâmica, colheu-se uma amostra de 125 itens, constatando-se 7 peças eram defeituosas. Com esses resultados amostrais, determine a estimativa intervalar de 87% de confiança da proporção de peças defeituosas produzidas pela empresa.
+
+Dados disponíveis no enunciado:
+
+-   n=125 itens → Tamanho da amostra
+
+-   x=7→ Número de peças defeituosas observado na amostra
+
+-   1-α=0,87 → Nível de confiança → 13%/2=6,5%=0,065
+
+-   𝑝=x/n=7/125=0,056→ Proporção de peças defeituosas observada na amostra.
+
+Suposições para o uso da distribuição normal:
+
+-   n\. 𝑝\>5 → 125.0,056 =7 \>5 Ok!
+
+-   n.(1- 𝑝) \>5 → 125.(1-0,056)=118 \> 5 Ok!
+
+Interpretação do intervalo de confiança:
+
+Valor crítico
+
+```{r}
+alpha = 0.13
+zc <- qnorm(p = 1-alpha/2,
+             mean = 0,
+             sd = 1)
+zc
+```
+
+Margem de erro
+
+```{r}
+p = 7/125
+n = 125
+
+erro <- zc*sqrt( p*(1-p)/n  )
+erro
+```
+
+Construção do intervalo
+
+```{r}
+p - erro ->linf
+p + erro -> lsup
+linf
+lsup
+```
+
+Considerando um nível de 87% de confiança podemos dizer que a proporção de peças defeituosas produzidas pela empresa pode variar de 2,48% a 8,71% , com uma margem de erro de 3,11%
+
+Refaça os cálculos utilizando 80% e 99% de confiança. Compare os resultados obtidos!
+
+Exercíco 3
+
+De uma amostra de 230 pessoas selecionadas aleatoriamente participantes de um grande evento, 145 disseram estar satisfeitas com o atendimento recebido. Os organizadores desse evento afirmar que a proporção de pessoas satisfeitas é igual a 70%. Com um nível de 92% de confiança, é possível contestar a afirmação dos organizadores?
+
+Parâmetro: Proporção de pessoas satisfeitas com o atendimento recebido.
+
+Dados disponíveis no enunciado:
+
+-   n=230 pessoas → Tamanho da amostra
+
+-   x=145 → Número de pessoas satisfeitas observado na amostra
+
+-   1-α=0,92 → Nível de confiança
+
+-   𝑝=x/n=145/230=0,06304→ Proporção de pessoas satisfeitas observada na amostra.
+
+Considerando um nível de 92% de confiança podemos dizer que a proporção de pessoas satisfeitas com o atendimento recebido pode variar de 57,4679% a 68,612%, com uma margem de erro de 5,572%, ou seja, não é possível confirmar a alegação dos organizadores de que 70% das pessoas estão satisfeitas
+
+Valor crítico
+
+```{r}
+alpha = 0.08
+zc <- qnorm(p = 1-alpha/2,
+             mean = 0,
+             sd = 1)
+zc
+```
+
+Margem de erro
+
+```{r}
+p = 145/230
+n = 230
+
+erro <- zc*sqrt( p*(1-p)/n  )
+erro
+```
+
+Construção do intervalo
+
+```{r}
+p - erro ->linf
+p + erro -> lsup
+linf
+lsup
+```
+
+Considerando um nível de 92% de confiança podemos dizer que a proporção de pessoas satisfeitas com o atendimento recebido pode variar de 57,47% a 68,61%, com uma margem de erro de 5,57%, ou seja não é possível confirmar a alegação dos organizadores que 70% das pessoas estão satisfeitas

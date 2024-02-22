@@ -1,0 +1,76 @@
+---
+title: "Comparação modelos Dummy"
+output: html_notebook
+---
+
+Instalando Pacotes necessários
+```{r}
+library(tidyverse)
+
+library(readxl)
+```
+
+Carregando os dados
+```{r}
+dados_cpi <- read_excel("comparacao_dummy.xlsx")
+View(dados_cpi)
+```
+O banco de dados contém informações de Região , país e CPI.
+CPI -> de 0 a 100 quanto maior a nota melhor a percepção do inficador de currupção para cada pais 
+
+```{r}
+dados_cpi <- read_excel("comparacao_dummy.xlsx")
+dados_cpi
+```
+
+Tabela de frequencia para região - Para verificar a quantidade de países apurados por região
+```{r}
+regiao <- dados_cpi$Region
+freq_regiao <- table(regiao)
+freq_regiao
+```
+
+```{r}
+ggplot(data = dados_cpi, aes(x=Region,fill=Region))+ geom_bar()+geom_text(aes(label=..count..),stat="count")+
+  ggtitle('Quantidade de países por região')
+```
+
+Queremos avaliar se existe difereça média de países vindos de diferentes regiões
+Vamos comparar um modelo utilizando as variáveis Dummy e rotulação numerica ordinal
+
+
+```{r}
+dados_cpi <- dados_cpi %>%
+  mutate(cod_regiao = forcats::fct_recode(Region,
+                                                             "1" = "AME",
+                                                             "2" = "AP",
+                                                             "3" = "ECA",
+                                                             "4" = "MENA",
+                                                             "5" = "SSA",
+                                                             "6" = "WE/EU"))%>%
+  mutate(cod_regiao = as.numeric(cod_regiao))
+dados_cpi
+```
+
+
+Muitas pessoas fazem simplesmente assim:
+
+
+
+```{r}
+modelo_dummy <- lm(data = dados_cpi, formula = CPI_score ~ Region) 
+
+modelo_cod <- lm(data = dados_cpi, formula = CPI_score ~ cod_regiao)
+```
+
+```{r}
+summary(modelo_dummy)
+```
+
+
+```{r}
+summary(modelo_cod)
+```
+
+O modelo 2 nao faz menor sentido, uma vez que atribuimos valores arbitrarios as regioes 
+

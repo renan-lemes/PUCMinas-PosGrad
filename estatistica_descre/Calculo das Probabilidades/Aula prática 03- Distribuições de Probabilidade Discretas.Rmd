@@ -1,0 +1,132 @@
+---
+title: "Aula prática 03- Distribuições de Probabilidade Discretas"
+author: "Thiago Marques"
+date: "25/08/2023"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=FALSE}
+caminho="C:/Users/teste/Desktop/area de trabalho/tudao/Aulas MBA e MINICURSOS/MBA_PUC_MINAS_Estatistica_Descritiva_Calculo_Probabilidades_Turma 1/images"
+```
+
+## Aplicando distribuições discretas no software R
+
+```{r echo=FALSE, fig.align="center"}
+knitr::include_graphics(paste0(caminho,"/imagem7.png"))
+```
+
+Bernoulli
+
+Imaginemos que X="O aluno acertar uma questão na prova", sendo que a prova só tem uma questão, contendo certo ou errado, portanto podemos entender que o aluno tem uma resposta favorável em duas possíveis, 50% de chance de acertar a questão.
+
+Fazendo pela distribuição acumulada:
+
+```{r}
+pbinom(1,size=1,p=0.5)-pbinom(0,size=1,p=0.5)
+```
+
+Fazendo pela função massa:
+
+```{r}
+dbinom(1,size=1,p=0.5)
+```
+ 
+Binomial
+
+Imaginemos que X="O aluno acertar uma questão na prova", sendo que a prova só tem três questões, contendo certo ou errado, portanto podemos entender que o aluno tem uma resposta favorável em  três possíveis.
+
+Fazendo pela distribuição acumulada:
+
+```{r}
+pbinom(1,size=3,p=1/3)-pbinom(0,size=3,p=1/3)
+```
+
+Fazendo pela função massa:
+
+```{r}
+dbinom(1,size=3,p=1/3)
+```
+
+Binomial
+
+Considere um exame de múltipla escolha com 20 questões, 5 alternativas pra cada pergunta. Caso o aluno não estude e "chute" todas as respostas, qual a probabilidade de acertar 30% da prova? E qual seu número esperado de acertos? 
+
+a) Qual a probabilidade de acertar 30% da prova?
+
+x ~ binomial (20,1/5)
+
+Pela distribuição acumulada:
+
+```{r}
+n=20
+p=0.2
+pbinom(6,size=n,p)-pbinom(5,size=n,p)
+```
+
+Pela função massa:
+
+```{r}
+n=20
+p=0.2
+dbinom(6,size=n,p)
+```
+Qual seu número esperado de acertos? 
+
+```{r}
+valor_esperado=n*p
+valor_esperado
+```
+
+Poisson
+
+O número de acidentes que acontecem na ponte Rio Niterói segue uma distribuição de Poisson com média 3 por hora.
+
+a) Calcule a probabilidade de 2 acidentes em uma hora.
+b) Calcule a probabilidade de pelo menos 2 acidentes em 2 horas.
+
+Como o a taxa solicitada está em horas, manteremos o nosso lâmbida
+```{r}
+lambda=3
+```
+
+Utilizando a função massa de probabilidade aplicando para X=2: P(X=2)
+
+```{r}
+dpois(2,lambda)
+```
+
+#Utilizando a função de distribuição acumulada P(X<=2)-P(X<=1)= P(X=2)
+```{r}
+ppois(2,lambda)-ppois(1,lambda)
+```
+
+Na "mão"
+```{r}
+(3^2)*exp(-3)/factorial(2)
+```
+
+b) 
+
+Como o a taxa solicitada está em 2horas, ajustaremos o lâmbida proporcionalmente para 6.
+```{r}
+lambda=6
+```
+
+Calculando o complementar da probabilidade solicitada ou seja: 
+
+1 - P(X<=1) = 1-P(X<2) = 
+
+P(X>=2)
+
+```{r}
+1 - ppois(1,lambda)
+```
+
+Na "mão"
+```{r}
+1 - (exp(-6)+6*exp(-6))
+```

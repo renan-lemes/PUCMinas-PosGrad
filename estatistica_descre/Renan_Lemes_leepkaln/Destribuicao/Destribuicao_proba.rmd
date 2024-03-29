@@ -1,0 +1,123 @@
+---
+title: "Pós-Graduação Estatística para Ciência de dados - PUC MINAS"
+author: "Renan Lemes Leepkaln"
+date: "26/10/2023"
+output: rmdformats::downcute
+---
+
+# Distribuição de probabilidade Beta
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE,echo = TRUE,encoding = 'UTF-8')
+knitr::opts_knit$set(root.dir = "D://Projeto_//PUCMinas-PosGrad//estatistica_descre//Renan_Lemes_leepkaln//Destribuicao")
+
+```
+
+### Para baixar o pacote do ggplot2
+```{r}
+# so tirar do comentario no caso 
+# install.packages("ggplot2")
+```
+
+```{r}
+# Carregando a Lib
+library(ggplot2)
+
+```
+
+
+```{r}
+
+# Parâmetros da distribuição Beta
+# Pode escolher o que preferir
+
+alpha = 2
+beta = 5
+
+
+```
+
+```{r}
+# Numero de amostrar igual a 1000
+
+n_samples = 1000
+
+```
+
+```{r}
+# Tamanho da amostra
+
+sample_size = 10
+
+```
+
+```{r}
+# Criando uma matriz para armazenar as medias
+
+means = numeric(n_samples)
+```
+
+```{r}
+# Intero para cada n_samples calculo a beta depois insiro dentro da matriz de means
+for (i in 1:n_samples){
+  sample_data = rbeta(sample_size, alpha, beta)
+  means[i] = mean(sample_data)
+}
+
+```
+
+```{r}
+# Crie um histograma das médias amostrais
+hist_data = data.frame(Means = means)
+p = ggplot(hist_data, aes(x = Means)) +
+  geom_histogram(binwidth = 0.05, fill = "blue", color = "black", alpha = 0.7) +
+  labs(title = "Distribuição das Médias Amostrais (n=30)",
+       x = "Média Amostral",
+       y = "Frequência")
+
+p
+
+```
+```{r}
+# Calculando a media o desvio padrao da distribuicao Beta original
+
+beta_mean = alpha / (alpha + beta)
+beta_sd = sqrt((alpha * beta) / ((alpha + beta)^2 * (alpha + beta + 1)^2))
+
+```
+
+````{r}
+# Calculando a media e o desvio padrao da destribuicao Beta da matriz
+normal_mean = beta_mean
+normal_sd = beta_sd / sqrt(sample_size)
+
+```
+
+```{r}
+# Da para notar que o desvio padrao da que esta tendendo a media e bem menor.
+
+cat("Média da distribuição Beta original:", beta_mean, "\n")
+cat("Desvio padrão da distribuição Beta original:", beta_sd, "\n\n")
+cat("Média da distribuição normal aproximada:", normal_mean, "\n")
+cat("Desvio padrão da distribuição normal aproximada:", normal_sd, "\n")
+```
+```{r}
+s = 10000 
+new_size_sample = 100 
+matriz = numeric(s)
+
+for (i in 1:s){
+  d = rbeta(new_size_sample, alpha, beta)
+  matriz[i] = mean(d)
+}
+
+hist_data = data.frame(Means = matriz)
+h = ggplot(hist_data, aes(x = Means)) +
+  geom_histogram( fill = "red", color = "black", alpha = 0.7) +
+  labs(title = "Distribuição das Médias Amostrais do teorema central.",
+       x = "Média Amostral",
+       y = "Frequência")
+
+h
+
+```

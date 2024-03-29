@@ -1,0 +1,5 @@
+# Define a regra para todos os arquivos
+* text=auto
+
+# Define exceções para tipos específicos de arquivos
+*.ipynb text eol=lf

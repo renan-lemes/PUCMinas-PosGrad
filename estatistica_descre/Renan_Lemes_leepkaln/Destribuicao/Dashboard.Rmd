@@ -1,0 +1,102 @@
+---
+title: "Dash Destribuição Beta"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(ggplot2)
+library(shiny)
+library(shinyWidgets)
+```
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Sidebars
+
+```{r}
+
+library(shiny)
+library(ggplot2)
+
+ui <- fluidPage(
+  titlePanel("Teorema Central do Limite com Distribuição Beta"),
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput("alpha", "Alpha:", min = 1, max = 10, value = 2),
+      sliderInput("beta", "Beta:", min = 1, max = 10, value = 5),
+      sliderInput("n_samples", "Número de Amostras:", min = 10, max = 100, value = 30),
+      sliderInput("sample_size", "Tamanho da Amostra:", min = 5, max = 30, value = 10)
+    ),
+    mainPanel(
+      plotOutput("sample_means_plot"),
+      verbatimTextOutput("summary_stats"),
+      plotOutput("clt_plot")
+    )
+  )
+)
+
+server <- function(input, output) {
+  output$sample_means_plot <- renderPlot({
+    alpha <- input$alpha
+    beta <- input$beta
+    n_samples <- input$n_samples
+    sample_size <- input$sample_size
+    
+    means <- replicate(n_samples, mean(rbeta(sample_size, alpha, beta)))
+    
+    p <- ggplot(data.frame(Means = means), aes(x = Means)) +
+      geom_histogram(binwidth = 0.05, fill = "blue", color = "black", alpha = 0.7) +
+      labs(title = "Distribuição das Médias Amostrais",
+           x = "Média Amostral",
+           y = "Frequência")
+    
+    print(p)
+  })
+  
+  output$summary_stats <- renderPrint({
+    alpha <- input$alpha
+    beta <- input$beta
+    sample_size <- input$sample_size
+    
+    beta_mean <- alpha / (alpha + beta)
+    beta_sd <- sqrt((alpha * beta) / ((alpha + beta)^2 * (alpha + beta + 1)^2))
+    
+    normal_mean <- beta_mean
+    normal_sd <- beta_sd / sqrt(sample_size)
+    
+    cat("Média da distribuição Beta original:", round(beta_mean, 4), "\n")
+    cat("Desvio padrão da distribuição Beta original:", round(beta_sd, 4), "\n\n")
+    cat("Média da distribuição normal aproximada:", round(normal_mean, 4), "\n")
+    cat("Desvio padrão da distribuição normal aproximada:", round(normal_sd, 4), "\n")
+  })
+  
+  output$clt_plot <- renderPlot({
+    s <- 10000
+    new_size_sample <- 100
+    matrix_means <- numeric(s)
+    
+    for (i in 1:s) {
+      d <- rbeta(new_size_sample, input$alpha, input$beta)
+      matrix_means[i] <- mean(d)
+    }
+    
+    h <- ggplot(data.frame(Means = matrix_means), aes(x = Means)) +
+      geom_histogram(fill = "red", color = "black", alpha = 0.7) +
+      labs(title = "Distribuição das Médias Amostrais (Teorema Central do Limite)",
+           x = "Média Amostral",
+           y = "Frequência")
+    
+    print(h)
+  })
+}
+
+shinyApp(ui, server)
+
+
+```
+-----------------------------------------------------------------------

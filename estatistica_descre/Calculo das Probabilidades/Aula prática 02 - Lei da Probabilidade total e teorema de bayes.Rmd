@@ -1,0 +1,93 @@
+---
+title: "Aula prática 02 - Lei da Probabilidade total e teorema de bayes"
+author: "Thiago Marques"
+date: "25/08/2023"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=FALSE}
+caminho="C:/Users/teste/Desktop/area de trabalho/tudao/Aulas MBA e MINICURSOS/MBA_PUC_MINAS_Estatistica_Descritiva_Calculo_Probabilidades_Turma 1/images"
+```
+
+## Aplicando lei da probabilidade total e teorema de bayes no software R
+
+```{r echo=FALSE, fig.align="center"}
+knitr::include_graphics(paste0(caminho,"/imagem7.png"))
+```
+
+Teorema da probabilidade total
+
+Em uma empresa de tecnologia, existe um grupo de trabalhadores, apenas 10% mulheres. Dentre as mulheres, 50% moram longe, enquanto, dentre os homens, 15% moram longe. Relativamente a empresa toda, qual é o percentual de empregados que moram longe?
+
+Primeira maneira (Utilizando a fórmula tradicional)
+
+```{r}
+PA=0.1
+PAC=0.9
+#----
+PBdadoA=0.5
+PBCdadoA=0.5
+#----
+PBdadoAC=0.15
+PBCdadoAC=0.85
+
+#Queremos saber PB
+PB=PA*PBdadoA+PAC*PBdadoAC
+PB
+```
+
+
+Segunda maneira (Utilizando o diagrama de árvores)
+
+```{r}
+PAinterB=0.1*0.5
+PACinterB=0.9*0.15
+PB=PAinterB+PACinterB
+PB
+```
+
+Teorema de Bayes
+
+Em certa empresa, 40% dos homens e 20% das mulheres falam inglês fluentemente.80% das pessoas são homens. A probabilidade de um aluno fluente na língua inglesa, selecionado ao acaso, ser homem é?
+
+Primeira maneira (Utilizando a fórmula tradicional)
+
+```{r}
+PA=0.8
+PAC=0.2
+#----
+PBdadoA=0.4
+PBCdadoA=0.6
+#----
+PBdadoAC=0.2
+PBCdadoAC=0.8
+
+#Queremos saber PAdadoB
+
+#Denominador(Lei da probabilidade total)
+PB=PA*PBdadoA+PAC*PBdadoAC
+
+#Numerador( Uma parte do denominador)
+PAinterB=PA*PBdadoA
+
+bayes=PAinterB/PB
+bayes
+```
+
+Segunda maneira (Utilizando o diagrama de árvores)
+
+```{r}
+PAinterB=0.8*0.4
+PACinterB=0.2*0.2
+PB=PAinterB+PACinterB
+
+bayes=PAinterB/PB
+bayes
+```
+
+
+

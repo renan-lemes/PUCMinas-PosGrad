@@ -1,0 +1,23 @@
+Survival times in days of heroin addicts
+from entry to a clinic until departure.
+
+id		ID of subject
+clinic 		0=clinic A, 1- clinic B
+status 		0=censored, 1=departed from clinic)
+time		survival time (days)
+prision		Prison record (0 = none, 1 = any)
+dose		methodone dose (mg/day)
+
+
+The following questions consider a dataset from a study
+by Caplehorn et al. (“Methadone Dosage and Retention of
+Patients in Maintenance Treatment,” Med. J. Aust., 1991).
+
+These data comprise the times in days spent by heroin addicts from entry to departure from one of two methadone clinics. 
+There are two additional covariates, namely, prison record and maximum methadone dose, believed to affect the survival times. 
+The dataset name is addicts.dat.
+
+
+
+A metadona é um ótimo analgésico opióide, além de ter uma ação analgésica mais prolongada, 
+o que evita a oscilação na concentração sérica, ao que denominamos de picos e vales,

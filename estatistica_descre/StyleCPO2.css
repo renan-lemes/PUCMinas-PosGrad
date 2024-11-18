@@ -1,0 +1,55 @@
+#main .nav-pills > li.active > a,
+#main .nav-pills > li.active > a:hover,
+#main .nav-pills > li.active > a:focus {
+   background-color: #22983B;
+}
+
+#main .nav-pills > li > a:hover {
+  background-color: #06325e;
+}
+
+h1,h2,h3,h4,h5,h6,legend{
+    color: #06325e;
+}
+
+#nav-top span.glyphicon {
+  color: #06325e;
+}
+
+#table-of-contents header{
+    color:#06325e;
+    background-color: #06325e;
+}
+
+#table-of-contents h2{
+    background-color:#22983B;
+}
+
+
+
+a:hover{
+    color:#06325e
+}
+
+a:visited{
+    color:#06325e
+}
+
+#sidebar {
+    color: #D9AB16;
+    background: #06325e;
+}
+
+#sidebar h2 {
+    color: #FFFFFF;
+    background-color: #06325e;
+}
+
+#sidebar a {
+    color: #06325e;
+}
+
+#sidebar a:hover {
+    background-color: #3F4548;
+    color: #FFFFFF;
+}

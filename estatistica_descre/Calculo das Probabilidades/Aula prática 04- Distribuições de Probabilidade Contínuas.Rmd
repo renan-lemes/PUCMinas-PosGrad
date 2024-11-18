@@ -1,0 +1,100 @@
+---
+title: "Aula prática 04- Distribuições de Probabilidade Contínuas"
+author: "Thiago Marques"
+date: "25/08/2023"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=FALSE}
+caminho="C:/Users/teste/Desktop/area de trabalho/tudao/Aulas MBA e MINICURSOS/MBA_PUC_MINAS_Estatistica_Descritiva_Calculo_Probabilidades_Turma 1/images"
+```
+
+## Aplicando distribuições contínuas no software R
+
+```{r echo=FALSE, fig.align="center"}
+knitr::include_graphics(paste0(caminho,"/imagem7.png"))
+```
+
+Exponencial
+
+O tempo de espera em uma fila segue uma distribuição exponencial. Se o tempo médio esperado pelo cliente é 10 minutos para ser atendido qual a probabilidade:
+
+a) De que um cliente demore menos do que 12 minutos para ele ser atendido. 
+
+Utilizando a função de distribuição acumulada P(X<=12)
+```{r}
+pexp(12,rate=1/10)
+```
+
+Exponencial na "Mão"
+```{r}
+1-exp(-1.2)
+```
+
+b) De que um cliente demore entre 7 e 12 minutos para ser atendido.
+
+Utilizando a função de distribuição acumulada P(X<=12)-P(X<=7)
+```{r}
+pexp(12,rate=1/10) - pexp(7,rate=1/10)
+```
+
+#Exponencial na "Mão"
+
+```{r}
+1 - exp(-1.2) - (1- exp(-0.7)) 
+#ou
+exp(-0.7) - exp(-1.2)
+```
+
+Distribuição Normal
+
+Considere que o peso dos alunos segue uma normal com média igual a 70kg e desvio padrão igual a 5 kg. Calcule a probabilidade de um aluno possuir um peso entre 60 e 80 kg.
+
+Utilizando a função de distribuição acumulada P(x<=80) - P(x<=60)
+```{r}
+pnorm(80,mean = 70, sd = 5) - pnorm(60,mean = 70, sd = 5) 
+```
+
+Normal na "Mão"
+```{r}
+limite_inf=(60-70)/5
+limite_sup=(80-70)/5
+limite_inf
+limite_sup
+```
+
+Utilizando a função de distribuição acumulada da normal padrão 
+P(z<=2) - P(z<=-2)
+```{r}
+pnorm(limite_sup) - pnorm(limite_inf) 
+```
+
+Suponha que o valor das causas de ações (X) de um tribunal de justiça, 
+seja normalmente distribuído com média 20 (salários mínimos) e 
+variância 25 (Salários mínimos ao quadrado). Além disso, então a probabilidade de que uma causa seja maior que 26,25 salários mínimos é de?
+
+Utilizando a função de distribuição acumulada 1 - P(x<=26,25) 
+
+```{r}
+1-pnorm(26.25,mean = 20, sd = 5)
+```
+
+Utilizando lower tail=F
+```{r}
+pnorm(26.25,mean = 20, sd = 5,lower.tail = F)
+```
+
+Normal na "Mão" 
+```{r}
+z=(26.25-20)/5 
+```
+
+Utilizando a função de distribuição acumulada da normal padrão 
+1 - P(z<=1.25) 
+```{r}
+1-pnorm(z)
+```

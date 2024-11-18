@@ -1,0 +1,330 @@
+---
+Aula 2 - Regressão linear simples - Estimando Modelos de Regressão  
+---
+
+Exemplo 1 -
+
+Considerando as insformações de idade e custo de uma pessoa em uma empresa de plano de saúde.
+
+```{r}
+library(tidyverse)
+
+idade <- c(18,23,28,33,38,43,48,53,58,63)
+custo <- c(871,1132,1242,1356,1488,1638,2130,2454,3066,4090)
+dados <- data.frame(idade,custo)
+dados
+```
+
+Estimando os coeficientes por matrizes
+
+Imaginando que queremos o seguinte modelo
+
+Yi = a + bXi + ei sendo: custo = a + b\*idade + e
+
+Transformando em vetores e matrizes
+
+```{r}
+# criando matrizes e vetores
+Y <- custo
+is.vector(Y) 
+X=cbind(1,idade)
+is.matrix(X)
+
+```
+
+Criando a operação matricial
+
+-   t(x) -\> transposta de X
+
+-   solve -\> inversa
+
+-   %\*% -\> multiplicação
+
+Chegamos aos betas
+
+```{r}
+solve(t(X)%*%X)%*%t(X)%*%Y
+```
+
+Chegamos ao nosso modelo
+
+custo = -558,94 + 61,86\*idade
+
+Geramos o modelo usando função lm Queremos prever o custo baseado na idade dos clientes Interceptação e Inclinação o quanto a variável depe. aumenta com o aumento da variavel indepenente
+
+```{r}
+modelo = lm(custo ~ idade, data=dados)
+summary(modelo)
+```
+
+```{r}
+shapiro.test(modelo$residuals)
+```
+
+Teste de Normalidade Shapiro- Wilk
+
+-   H0: X é normalmente distribuiído
+
+-   H1: X não é normalemnte distribuído
+
+p-valor \< 0,05 rejeitamos H0
+
+Aplicando o teste de shapiro, NÃO rejeitamos a hipotese nula e podemos assumir a normalidade dos residuals pois p-value = 0.5043 isso indica que a média da diferenca entre os valores previstos e os valores observadors é próximo de 0.
+
+```{r}
+par(mfrow = c(2,2))
+plot(modelo)
+```
+
+Gráfico 1: Temos os resíduos em função dos valores estimados. Aqui observamos a independência e a homocedasticidade, se os resíduos se distribuem de maneira razoavelmente aleatória e com mesma amplitude em torno do zero.
+
+Gráfico 2: Podemos avaliar a normalidade dos resíduos. A linha diagonal pontilhada representa a distribuição normal teórica, e os pontos a distribuição dos resíduos observada. Espera-se que não exista grande fuga dos pontos em relação à reta.
+
+Gráfico 3: Pode ser avaliado da mesma maneira que o primeiro, observando a aleatoriedade e amplitude, desta vez dos resíduos padronizados.
+
+Gráfico 4: E o último gráfico permite visualizar as Distâncias de Cook das observações, uma medida de influência que pode indicar a presença de outliers quando possui valor maior do que 1.
+
+**Exemplo 2**
+
+Carregando a base de dados Cars.
+
+Esta base de dados mostra a velocidade e distância de parada no momento em que o carro é freado.
+
+Correlograma -\> mostra a correlação entre duas ou mais variáveis
+
+```{r}
+options("download.file.method"="wininet")
+install.packages("corrgram")
+library(corrgram)
+cars
+dim(cars)
+```
+
+Analisando a correlação entre as duas variáveis - Correlação entre distância e velocidade de parada
+
+```{r}
+# a função cor() retorna a correlação de todas variáveis quantitativas do banco de dados
+cor(cars)
+#como classificamos essa correlação?
+corrgram(cars, order=TRUE, lower.panel=panel.shade,
+         upper.panel=panel.pie, text.panel=panel.txt,
+         main="Carros")
+#podemos perceber pelo grafico de pizza a força da correlação
+#o tom escuro tambem indica a força da correlação 
+```
+
+Utilizando a função lm para gerar um modelo de regressão linear simples. Queremos prever a velocidade que o carro estava, utilizando a distância percorrida para a parada. Interceptação e Inclinação nos diz o quanto a variável dependente aumenta com o aumento da variavel indepenente
+
+```{r}
+
+?lm
+modelo = lm(speed ~ dist, data=cars)
+modelo
+```
+
+Visualização da relação entre variáveis e linha de melhor ajuste Podemos observar que os dados estão proximo a linha Como é uma correlação positiva, temos que quanto mais a distanacia aumenta , mais a velociadade era maior.
+
+```{r}
+#Executar com Crtrl+ Shift + Enter
+plot(speed ~ dist, data=cars, ylab = "Velocidade", xlab=" Distância", main="Carros")
+abline(modelo)
+```
+
+Podemos fazer uma previsão usando diretamente os coeficientes. Ou seja, qual seria a velocidade esperada se ele levou 50 metros para parar?
+
+```{r}
+modelo$coefficients
+modelo$coefficients[1] + modelo$coefficients[2] * 50
+```
+
+Usando predict - metodo generico do R - faz vários tipo de previsão - por exemplo para modelos de machine learning
+
+```{r}
+predict(modelo,data.frame(dist = 50))
+```
+
+Analisando melhor o modelo
+
+```{r}
+summary(modelo)
+#traz analise dos resifuos
+#coeficientes
+#erros padrão
+# e teste de significancia do modelo
+modelo$coefficients
+#mostra os coeficientes
+modelo$residuals
+#Mostra todos os residuos
+hist(modelo$residuals)
+#para anlise de residuos geramos um histograma - embora nao é um sino perfeito observamos uma semelhaça com a distribuição normal - formato de um sino
+```
+
+```{r}
+shapiro.test(modelo$residuals)
+```
+
+Teste de Normalidade Shapiro- Wilk
+
+H0: X é normalmente distribuiído
+
+H1: X não é normalemnte distribuído
+
+p-valor \< 0,05 rejeitamos H0
+
+Aplicando o teste de shapiro, NÃO rejeitamos a hipotese nula e podemos assumir a normalidade dos residuals pois p-value = 0.5043 isso indica que a média da diferenca entre os valores previstos e os valores observadors é próximo de 0.
+
+```{r}
+par(mfrow = c(2,2))
+plot(modelo)
+```
+
+Gráfico 1: Temos os resíduos em função dos valores estimados. Aqui observamos a independência e a homocedasticidade, se os resíduos se distribuem de maneira razoavelmente aleatória e com mesma amplitude em torno do zero.
+
+Gráfico 2: Podemos avaliar a normalidade dos resíduos. A linha diagonal pontilhada representa a distribuição normal teórica, e os pontos a distribuição dos resíduos observada. Espera-se que não exista grande fuga dos pontos em relação à reta.
+
+Gráfico 3: Pode ser avaliado da mesma maneira que o primeiro, observando a aleatoriedade e amplitude, desta vez dos resíduos padronizados.
+
+Gráfico 4: E o último gráfico permite visualizar as Distâncias de Cook das observações, uma medida de influência que pode indicar a presença de outliers quando possui valor maior do que 1.
+
+################### Exercício 1
+
+Relação entre horas de estudo e desempenho em um teste
+
+Suponha que temos dados sobre o tempo de estudo (em horas) e o desempenho em um teste (pontuação) de 30 alunos. Queremos verificar se os alunos que estudam mais tem melhor desempenho no teste.
+
+```{r}
+.
+set.seed(42)
+
+tempo_estudo <- rnorm(30, mean = 5, sd = 1)  
+desempenho_teste <- 3 * tempo_estudo + rnorm(30, mean = 10, sd = 2) 
+
+data = data.frame(tempo_estudo,desempenho_teste)
+```
+
+```{r}
+modelo1 = lm(desempenho_teste ~ tempo_estudo, data=data)
+modelo1
+
+```
+
+```{r}
+summary(modelo1)
+```
+
+################### Exercício 2
+
+Relação entre a quantidade de exercício físico e a frequência cardíaca
+
+Suponha que temos dados sobre a quantidade de exercício físico (em minutos) e a frequência cardíaca (em batimentos por minuto) de 30 indivíduos. Queremos entender a relação entre as duas variáveis
+
+```{r}
+set.seed(42)
+
+# Gerar dados aleatórios
+exercicio_fisico <- rnorm(30, mean = 60, sd = 10)  # Média de 60 minutos e desvio padrão de 10
+frequencia_cardiaca <- 180 - exercicio_fisico + rnorm(30, mean = 0, sd = 5)  # Frequência cardíaca calculada com correlação negativa forte
+
+
+```
+
+```{r}
+data = data.frame(frequencia_cardiaca,exercicio_fisico)
+```
+
+```{r}
+modelo2 = lm(frequencia_cardiaca ~ exercicio_fisico, data=data)
+modelo2
+
+```
+
+```{r}
+summary(modelo2)
+```
+
+################### Exercício 3
+
+Relação entre a quantidade de sono e a produtividade no trabalho
+
+Suponha que temos dados sobre a quantidade de sono (em horas) e a produtividade no trabalho (medida em uma escala de 0 a 10) de 30 funcionários. Inferir a relação entre a quantidade de sono e a produtividade do trabalho
+
+```{r}
+set.seed(42)
+
+# Gerar dados aleatórios
+sono_horas <- rnorm(30, mean = 7, sd = 1)  # Média de 7 horas e desvio padrão de 1
+produtividade <- sono_horas + rnorm(30, mean = 3, sd = 1)  # Média de 3 e desvio padrão de 1
+
+```
+
+```{r}
+data = data.frame(produtividade,sono_horas)
+```
+
+```{r}
+modelo3 = lm(produtividade ~ sono_horas, data=data)
+modelo3
+
+```
+
+```{r}
+summary(modelo3)
+```
+
+################### Exercício 4
+
+Quantidade de horas de estudo e nível de ansiedade
+
+Suponha que temos dados sobre a quantidade de horas de estudo (em horas) e o nível de ansiedade (medido em uma escala de 0 a 10) de 30 estudantes. Pretende-se entender a relação entre as variáveis
+
+```{r}
+# Exemplo 4: Correlação negativa fraca (R)
+set.seed(42)
+
+# Gerar dados aleatórios
+horas_estudo <- rnorm(30, mean = 5, sd = 1)  # Média de 5 horas e desvio padrão de 1
+nivel_ansiedade <- 5 - horas_estudo + rnorm(30, mean = 0, sd = 2)  # Nível de ansiedade calculado com correlação negativa fraca
+
+```
+
+```{r}
+data = data.frame(nivel_ansiedade,horas_estudo)
+```
+
+```{r}
+modelo4 = lm(nivel_ansiedade ~ horas_estudo, data=data)
+modelo4
+
+```
+
+```{r}
+summary(modelo4)
+```
+
+################### Exercício 5
+
+Quantidade de exercício físico e calorias queimada durante o exercício
+
+Suponha que temos dados sobre a quantidade de exercício físico (em minutos) e a quantidade de calorias queimadas durante o exercício de 30 indivíduos. Pretende-se entender a relação entre as variáveis
+
+```{r}
+set.seed(42)
+
+# Gerar dados aleatórios
+exercicio_fisico <- rnorm(30, mean = 60, sd = 10)  # Média de 60 minutos e desvio padrão de 10
+calorias_queimadas <- rnorm(30, mean = 300, sd = 50)  # Média de 300 calorias e desvio padrão de 50
+```
+
+```{r}
+data = data.frame(calorias_queimadas,exercicio_fisico)
+```
+
+```{r}
+modelo5 = lm(calorias_queimadas ~ exercicio_fisico, data=data)
+modelo5
+
+```
+
+```{r}
+summary(modelo5)
+```

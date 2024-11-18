@@ -1,0 +1,107 @@
+---
+title: "Aula prática 01 - R - União e Intersecção de eventos"
+author: "Thiago Marques"
+date: "25/08/2023"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=FALSE}
+caminho="C:/Users/teste/Desktop/area de trabalho/tudao/Aulas MBA e MINICURSOS/MBA_PUC_MINAS_Estatistica_Descritiva_Calculo_Probabilidades_Turma 1/images"
+```
+
+## Aplicando conceitos básicos no software R
+
+```{r echo=FALSE, fig.align="center"}
+knitr::include_graphics(paste0(caminho,"/imagem7.png"))
+```
+
+## Instalando pacotes
+
+```{r include=FALSE}
+#install.packages("tidydice")
+#install.packages("dplyr")
+library(tidydice)
+library(dplyr)
+```
+
+## Exemplos de espaço amostral com R
+
+Criando um dado e visualizando seus resultados (Times é igual o Número de vezes que joga o dado)
+
+```{r}
+set.seed(123)
+roll_dice(times = 3) %>% 
+  plot_dice()
+```
+
+## Exemplo da união e interseção
+
+Seja o Evento A e B, definidos a seguir:
+  - A: "Aparecer Faces Pares do dado": {2, 4, 6}
+  - B:  "Aparecer Faces maiores 3": {4,5,6}
+
+A **união** do evento A e B é dado por?
+
+Criando os resultados do dado
+
+```{r}
+dado_resultado = data.frame(c(0,1,2,3,4,5,6))
+names(dado_resultado)="X1"
+dado_resultado
+```
+
+Criando os eventos
+
+```{r}
+A=subset(dado_resultado,X1%%2==0)
+B=subset(dado_resultado,X1>3)
+```
+
+Evento A
+```{r}
+A
+```
+
+Evento B
+```{r}
+B
+```
+
+
+União dos conjuntos A e B
+
+```{r}
+uniao=union(A,B)
+uniao
+```
+
+Interseção dos conjuntos A e B
+
+```{r}
+intersecao=intersect(A,B)
+intersecao
+```
+
+Criando uma moeda e visualizando os resultados
+
+```{r}
+set.seed(123)
+flip_coin(times = 3) %>%  
+  plot_coin()
+```
+
+## Probabilidade da união
+
+Baseado em dados históricos da empresa, o cliente A tem propensão de compra de 30%, já o cliente B possui 28% de propensão a comprar este produto. Ambos juntos tem a propensão de compra de 24%. Qual a probabilidade de que o mesmo seja comprado por pelo menos um dos clientes?
+  
+```{r}
+PA=0.30
+PB=0.28
+PAinterB=0.24
+PAuniaoB=PA+PB-PAinterB
+```
+

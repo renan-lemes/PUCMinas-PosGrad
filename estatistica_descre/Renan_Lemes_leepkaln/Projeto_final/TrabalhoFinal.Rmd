@@ -1,0 +1,236 @@
+---
+title: "TrabalhoFinal"
+author: "Renan Lemes Leepkaln"
+date: "2023-10-31"
+output: rmdformats::downcute
+---
+
+```{r setup, include=FALSE}
+# Setando as configuracoes iniciais
+
+knitr::opts_chunk$set(echo = TRUE,encoding = 'UTF-8')
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+knitr::opts_knit$set(root.dir = "D://Projeto_//PUCMinas-PosGrad//estatistica_descre//Renan_Lemes_leepkaln//Projeto_final")
+
+```
+
+### Carregando as libs
+```{r}
+library(readr)
+library(ggplot2)
+library(plotly)
+library(e1071)
+require(dplyr)
+require(Hmisc)
+require(esquisse)
+library(DescTools)
+require(gridExtra)
+
+```
+
+```{r}
+setwd(
+  "D://Projeto_//PUCMinas-PosGrad//estatistica_descre//Renan_Lemes_leepkaln//Projeto_final"
+)
+getwd()
+
+```
+
+## Carregando os dados do ENAD
+```{r}
+
+enade = read_csv2("MICRODADOS_ENADE_2017.txt")
+```
+
+## Visualiando o banco de dados
+```{r}
+head(enade, 10)
+```
+
+### Fazendo o filtro dos dados
+```{r}
+enade_filtr = enade %>% dplyr::select(
+  NT_OBJ_FG,
+  CO_GRUPO,
+  CO_REGIAO_CURSO,
+  QE_I02,
+  CO_TURNO_GRADUACAO ,
+  NT_GER
+)
+```
+
+### Vizualizando as colunas
+```{r}
+names(enade_filtr)
+```
+## Aqui estou filtrando para o grupo de Matemática (Bacharel)
+```{r}
+enade_mate = enade_filtr %>% filter(CO_GRUPO == 701)
+```
+
+````{r}
+## Verificando se o filtro funcionou 
+head(enade_mate, 5)
+```
+
+````{r}
+## Estamos apenas renomeando as colunas com nomes melhores
+colnames(enade_mate)[2] <- "MAT_BC" # Matemática Bacharel
+colnames(enade_mate)[4] <- "EST_CVL" # Estado Civil casado, solteiro ...
+```
+
+
+## Transformação de dados alterando os rotulos
+````{r}
+
+enade_mate$EST_CVL = ifelse(
+  enade_mate$EST_CVL == "A",
+  "Solteiro(a)",
+  ifelse(
+    enade_mate$EST_CVL == "B",
+    "Casado(a)",
+    ifelse(
+      enade_mate$EST_CVL == "C",
+      "Separado(a)",
+      ifelse(enade_mate$EST_CVL ==
+               "D", "Viuvo(a)", "Outro")
+    )
+  )
+)
+
+enade_mate = enade_mate %>% mutate(
+  CO_REGIAO_CURSO = case_when(
+    CO_REGIAO_CURSO == 1 ~ "Norte",
+    CO_REGIAO_CURSO == 2 ~ "Nordeste",
+    CO_REGIAO_CURSO == 3 ~ "Sudeste",
+    CO_REGIAO_CURSO == 4 ~ "Sul",
+    CO_REGIAO_CURSO == 5 ~ "Centro-Oeste"
+  )
+)
+
+enade_mate = enade_mate %>% mutate(
+  CO_TURNO_GRADUACAO = case_when(
+    CO_TURNO_GRADUACAO == 1 ~ "Matutino",
+    CO_TURNO_GRADUACAO == 2 ~ "Vespertino",
+    CO_TURNO_GRADUACAO == 3 ~ "Integral",
+    CO_TURNO_GRADUACAO == 4 ~ "Noturno",
+  )
+)
+
+```
+
+
+```{r}
+head(enade_mate, 5)
+
+```
+
+## Sumário dos dados
+````{r}
+s = summary(enade_mate)
+s
+```
+Conseguimos notar que a mediana das notas gerais foi bem abaixo e que a média da notas bojetivas da formação geral tambem bem baixa.
+
+## Vericicando os NaN 
+```{r}
+soma_NaN = colSums(is.na(enade_mate))
+soma_NaN
+
+```
+Conseguimos notar que temos 3 colunas com bastante dados faltantes das notas objetivas das notas gerais e o estado civil vamos eliminar elas.
+
+```{r}
+enade_mate_sem_na = enade_mate %>% na.omit()
+```
+
+```{r}
+## Verificando se realmente saiu os dados NaN 
+
+colSums(is.na(enade_mate_sem_na))
+```
+
+```{r}
+head(enade_mate_sem_na, 5) 
+
+```
+
+```{r}
+## Verificando as quatidades de linas dos dados original e dos dados sem os  NaN
+dim(enade_mate)[1]
+dim(enade_mate_sem_na)[1]
+```
+
+## Estatística Descritiva
+Curtose negativa indica uma distribuição leptocústica ou seja caudas mais afuniladas em relação a distribuição normal.
+Já a assimetria negativa nos indica destribuição assimetrica para esquerda.
+  
+```{r}
+enade_mate_sem_na %>%
+  select(NT_OBJ_FG) %>%
+  summarise(
+    quantidade = n(),
+    media = mean(NT_OBJ_FG),
+    mediana = median(NT_OBJ_FG),
+    moda = Mode(NT_OBJ_FG),
+    cv = sd(NT_OBJ_FG) / media * 100,
+    assimetria = skewness(NT_OBJ_FG),
+    curtose = kurtosis(NT_OBJ_FG)
+  ) %>%
+  arrange(desc(mediana))
+
+```
+
+Com o histograma podemos dizer que a nota objetiva de fomação geral foi entre 75 e 60 
+```{r}
+g_hist = ggplot(enade_mate_sem_na, aes(x = NT_OBJ_FG)) +
+  geom_histogram(color = "black",
+                 fill = "blue",
+                 bins = 20,
+                 aes(y = (..count..) / sum(..count..))) +
+  ggtitle("Histograma da nota dos alunos de Matemática (Bacharel)") +
+  xlab("nota") +
+  ylab("Frequência relativa")
+g_hist
+
+```
+
+```{r}
+g_densidade = ggplot(enade_mate_sem_na, aes(x = NT_OBJ_FG)) +
+  geom_density(col = 2, aes(y = 27 * (..count..) /
+                                        sum(..count..))) +
+  ggtitle("Curva de densidade da nota dos alunos de análise de sistemas") +
+  xlab("nota") +
+  ylab("Frequência relativa")
+g_densidade
+```
+
+## Análise das notas por região
+Conseguimos análisar pelo boxplot que as piores notas tiradas na nota objetiva de formação geral foi o Norte e o Nordeste.
+```{r}
+
+# Criando o grágico de boxplot para cada região dos dados
+ggplot(data = enade_mate_sem_na, aes(x = CO_REGIAO_CURSO, y = NT_OBJ_FG)) +
+  geom_boxplot(fill = "green") +
+  labs(title = "Distribuição de Notas por Região", x = "Região", y = "Notas")
+
+```
+Da mesma forma podemos análisar as notas para quem estuda de manhã a tarde a noite ou integral. Vendo o boxplot temos alguns outliers no matutino, porem a integral se saiu melhor. 
+```{r}
+# Criando o grágico de boxplot para cada região dos dados
+ggplot(data = enade_mate_sem_na, aes(x = CO_TURNO_GRADUACAO, y = NT_OBJ_FG)) +
+  geom_boxplot(fill = "red") +
+  labs(title = "Distribuição de Notas por Priodo", x = "Periodo", y = "Notas")
+
+```
+## Análise com gráfico de barras
+Aqui podemos ver a distribuição das categorias de estado civil para cada região, ou seja  predominante é a solteira.
+```{r}
+# Gráfico de barras empilhadas
+ggplot(data = enade_mate_sem_na, aes(x = CO_REGIAO_CURSO, fill = EST_CVL)) +
+  geom_bar() +
+  labs(title = "Gráfico de Barras Empilhadas",
+       x = "Região do Curso",
+       y = "Contagem",
+       fill = "Estado Civil")
+```

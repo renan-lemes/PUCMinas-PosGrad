@@ -1,0 +1,73 @@
+---
+title: "Aula prática 05- Teorema central do limite a distribuição das médias"
+author: "Thiago Marques"
+date: "25/08/2023"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=FALSE}
+caminho="C:/Users/teste/Desktop/area de trabalho/tudao/Aulas MBA e MINICURSOS/MBA_PUC_MINAS_Estatistica_Descritiva_Calculo_Probabilidades_Turma 1/images"
+```
+
+Considere a população de uma distribuição discreta binomial de 100 elementos
+
+```{r}
+pop = rbinom(100,size=1,1/2)
+
+mi = mean(pop) 
+
+amostra1 = sample(pop,size=100,replace=T)
+amostra2 = sample(pop,size=100,replace=T)
+amostra3 = sample(pop,size=100,replace=T)
+
+xbarra1 = mean(amostra1) 
+xbarra2 = mean(amostra2)
+xbarra3 = mean(amostra3)
+
+cbind(mi,xbarra1,xbarra2,xbarra3)
+
+hist(t(data.frame(xbarra1,xbarra2,xbarra3)))
+
+```
+
+Para n = 30
+
+```{r}
+tentativas = 30
+medias = numeric(tentativas)
+
+for (i in (1:tentativas)) {
+  medias[i] = mean(sample(pop,size=100,replace=T))
+}
+
+hist(medias)
+```
+Para n = 100
+
+```{r}
+tentativas = 100
+medias = numeric(tentativas)
+
+for (i in (1:tentativas)) {
+  medias[i] = mean(sample(pop,size=100,replace=T))
+}
+
+hist(medias)
+```
+
+Para n = 1000
+
+```{r}
+tentativas = 1000
+medias = numeric(tentativas)
+
+for (i in (1:tentativas)) {
+  medias[i] = mean(sample(pop,size=100,replace=T))
+}
+
+hist(medias)
+```

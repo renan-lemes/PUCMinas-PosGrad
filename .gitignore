@@ -45,8 +45,11 @@ Analise_e_Sobre/Aulas
 Analise_e_Sobre/data
 
 
+## ignorar os pdfs 
+GOVERNAN-A-DE-DADOS/viewer/files/Mídia carregada/*pdf
 
-GOVERNAN-A-DE-DADOS---Oferta-2-2024-Aug-04_00-50-56-441/
+
+
 -IEC_EPCD_O2_T1_Online-Frameworks-para-Deep-Learning-2024-Oct-01_01-37-18-444/viewer/files/*pdf
 DATA-DISCOVERY-E-ANALYTICS/viewer/files/*pdf
 DATA-DISCOVERY-E-ANALYTICS/viewer/files/imagens/*pdf

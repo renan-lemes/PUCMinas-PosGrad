@@ -31,10 +31,13 @@ CULTURA-E-PR-TICAS-DATAOPS-E-MLOPS---Oferta-2-2024-Jan-29_20-20-03-090/viewer/fi
 -IEC_EPCD_O2_T1_Online-Machine-Learning-2024-Apr-29_20-50-16-371/viewer/files/*pptx
 -IEC_EPCD_O2_T1_Online-Machine-Learning-2024-Apr-29_20-50-16-371/viewer/files/Trabalhos/TrabalhoFinal/*csv
 
--IEC_EPCD_O2_T1_Online-An-lise-Multivariada-2024-May-09_05-37-45-585/viewer/files/TrabalhoFinal/*csv
--IEC_EPCD_O2_T1_Online-An-lise-Multivariada-2024-May-09_05-37-45-585/viewer/files/unfiled/*csv
--IEC_EPCD_O2_T1_Online-An-lise-Multivariada-2024-May-09_05-37-45-585/viewer/files/*pdf
--IEC_EPCD_O2_T1_Online-An-lise-Multivariada-2024-May-09_05-37-45-585/viewer/files/*pptx
+
+## Ignore files da analise multivariada
+ANALISE-MULTIVARIADA/viewer/files/TrabalhoFinal/*csv
+ANALISE-MULTIVARIADA/viewer/files/unfiled/*csv
+ANALISE-MULTIVARIADA/viewer/files/*pdf
+ANALISE-MULTIVARIADA/viewer/files/*pptx
+ANALISE-MULTIVARIADA/viewer/files/unfiled
 
 -IEC_EPCD_O2_T1_Online-Redes-Neurais-e-Deep-Learning-2024-Jun-20_13-41-43-448/viewer/files/*pdf
 -IEC_EPCD_O2_T1_Online-Redes-Neurais-e-Deep-Learning-2024-Jun-20_13-41-43-448/viewer/files/Slides/*

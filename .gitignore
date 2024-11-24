@@ -29,11 +29,11 @@ Modelos-de-Regress/viewer/files/Trabalhos/*csv
 Modelos-de-Regress/viewer/files/Trabalhos/*txt
 
 
--IEC_EPCD_O2_T1_Online-Machine-Learning-2024-Apr-29_20-50-16-371/viewer/files/*pdf
--IEC_EPCD_O2_T1_Online-Machine-Learning-2024-Apr-29_20-50-16-371/viewer/files/Trabalhos/*csv
--IEC_EPCD_O2_T1_Online-Machine-Learning-2024-Apr-29_20-50-16-371/viewer/files/*csv
--IEC_EPCD_O2_T1_Online-Machine-Learning-2024-Apr-29_20-50-16-371/viewer/files/*pptx
--IEC_EPCD_O2_T1_Online-Machine-Learning-2024-Apr-29_20-50-16-371/viewer/files/Trabalhos/TrabalhoFinal/*csv
+Machine-Learning/viewer/files/*pdf
+Machine-Learning/viewer/files/Trabalhos/*csv
+Machine-Learning/viewer/files/*csv
+Machine-Learning/viewer/files/*pptx
+Machine-Learning/viewer/files/Trabalhos/TrabalhoFinal/*csv
 
 
 ## Ignore files da analise multivariada

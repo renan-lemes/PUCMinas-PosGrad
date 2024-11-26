@@ -55,6 +55,9 @@ Analise_e_Sobre/data
 ## ignorar os pdfs 
 GOVERNAN-A-DE-DADOS/viewer/files/Mídia carregada/*pdf
 
+S-ries-Temporais/viewer/files/*pdf
+S-ries-Temporais/viewer/files/*csv
+
 
 
 -IEC_EPCD_O2_T1_Online-Frameworks-para-Deep-Learning-2024-Oct-01_01-37-18-444/viewer/files/*pdf
